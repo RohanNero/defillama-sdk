@@ -122,8 +122,11 @@ async function fetchBlockFromProvider(
   return block;
 }
 
+// fix for IBC chains with EVM layer so block lookups use the EVM RPC instead of cosmos LCD 
+const cosmosChainsWithEvm = new Set(['injective'])
+
 function getExtraProvider(chain = "ethereum") {
-  if (isCosmosChain(chain))  // maybe check if it is also an evm chain?
+  if (isCosmosChain(chain) && !cosmosChainsWithEvm.has(chain))
     return getCosmosProvider(chain)
   if (chain === "algorand")
     return algorandBlockProvider;
